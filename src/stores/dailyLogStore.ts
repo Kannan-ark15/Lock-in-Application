@@ -7,6 +7,7 @@ import {
   updateDailyLog,
 } from '@/db/queries/dailyLogs';
 import { sharedStorage, STORAGE_KEYS } from '@/native/SharedStorage';
+import { WallpaperSyncService } from '@/services/WallpaperSyncService';
 import { useTaskStore } from '@/stores/taskStore';
 import { useUserStore } from '@/stores/userStore';
 import { useWallpaperStore } from '@/stores/wallpaperStore';
@@ -59,7 +60,9 @@ const writeTodayStateToMMKV = (todayLog: DailyLog): void => {
   sharedStorage.set(STORAGE_KEYS.TODAY_STATE, JSON.stringify(payload));
 };
 
-const triggerWallpaperRender = (_completionPct: number): void => {};
+const triggerWallpaperRender = async (completionPct: number): Promise<void> => {
+  await WallpaperSyncService.scheduleRender(completionPct);
+};
 
 const checkStreakIncrement = async (): Promise<void> => {};
 
@@ -137,7 +140,7 @@ export const useDailyLogStore = create<DailyLogStore>((set, get) => ({
       }
 
       // 5. Trigger WallpaperSyncService.scheduleRender().
-      triggerWallpaperRender(recalculatedPct);
+      await triggerWallpaperRender(recalculatedPct);
 
       // 6. Fire haptic + sound if enabled.
       await fireCompletionFeedback();
@@ -175,7 +178,7 @@ export const useDailyLogStore = create<DailyLogStore>((set, get) => ({
         completionPct: nextCompletionPct,
       });
       writeTodayStateToMMKV(nextLog);
-      triggerWallpaperRender(nextCompletionPct);
+      await triggerWallpaperRender(nextCompletionPct);
     } catch {
       set({ todayLog: previousTodayLog, completionPct: previousCompletionPct });
       writeTodayStateToMMKV(previousTodayLog);

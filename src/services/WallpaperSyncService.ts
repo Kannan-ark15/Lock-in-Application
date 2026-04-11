@@ -1,6 +1,8 @@
-import { AppState, type AppStateStatus } from 'react-native';
+import { AppState, Dimensions, type AppStateStatus } from 'react-native';
 
+import { getDailyLogByDate, updateDailyLog } from '@/db/queries/dailyLogs';
 import { WallpaperRenderer, type RenderJob } from '@/engine/WallpaperRenderer';
+import { WallpaperManager } from '@/native/WallpaperManager';
 import { useWallpaperStore } from '@/stores/wallpaperStore';
 import type { Result } from '@/types/result.types';
 import { err, ok } from '@/types/result.types';
@@ -19,6 +21,14 @@ let debounceTimer: ReturnType<typeof setTimeout> | null = null;
 let isRendering = false;
 let queuedCompletionPct: number | null = null;
 let latestRequestedCompletionPct = 0;
+
+const getTodayDateKey = (): string => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
 
 const ensureAppStateListener = (): void => {
   if (appStateSubscription) {
@@ -52,7 +62,10 @@ const buildRenderJob = (completionPct: number): Result<RenderJob, WallpaperSyncS
   return ok({
     wallpaper,
     completionPct,
-    outputSize: { width: 1080, height: 2400 },
+    outputSize: {
+      width: Math.floor(Dimensions.get('window').width),
+      height: Math.floor(Dimensions.get('window').height),
+    },
   });
 };
 
@@ -69,6 +82,13 @@ const runRender = async (completionPct: number): Promise<Result<void, WallpaperS
       message: 'Wallpaper rendering failed.',
       cause: renderResult.error,
     });
+  }
+
+  await WallpaperManager.setLockScreenWallpaper(renderResult.data.uri);
+
+  const todayLog = await getDailyLogByDate(getTodayDateKey());
+  if (todayLog) {
+    await updateDailyLog(todayLog.id, { renderedWallpaperUri: renderResult.data.uri });
   }
 
   return ok(undefined);

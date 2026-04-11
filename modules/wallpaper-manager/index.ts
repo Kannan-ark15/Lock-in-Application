@@ -1,11 +1,14 @@
-// modules/wallpaper-manager/index.ts
-// Native module bridge for setting device wallpaper.
-// Android: wraps WallpaperManager.getInstance().setBitmap()
-// iOS: returns { supported: false } — triggers Shortcuts fallback UX.
+import { requireNativeModule } from 'expo-modules-core';
+
+export interface WallpaperSetResult {
+  supported: boolean;
+}
 
 export interface WallpaperManagerModule {
-  setLockScreenWallpaper(uri: string): Promise<void>;
-  setHomeScreenWallpaper(uri: string): Promise<void>;
+  setLockScreenWallpaper(uri: string): Promise<WallpaperSetResult>;
+  setHomeScreenWallpaper(uri: string): Promise<WallpaperSetResult>;
   isPermissionGranted(): Promise<boolean>;
   requestPermission(): Promise<boolean>;
 }
+
+export default requireNativeModule<WallpaperManagerModule>('WallpaperManager');
