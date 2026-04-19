@@ -1,0 +1,15 @@
+-- Merging decision tree log ---
+manifest
+ADDED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml:1:1-53
+INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml:1:1-53
+	package
+		ADDED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml:1:11-50
+		INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml
+uses-sdk
+INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml
+INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from D:\Projects\Mobile\lockin\modules\wallpaper-manager\android\src\main\AndroidManifest.xml

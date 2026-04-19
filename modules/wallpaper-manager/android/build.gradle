@@ -12,8 +12,9 @@ useExpoPublishing()
 
 android {
   namespace "expo.modules.wallpapermanager"
+  compileSdk rootProject.ext.compileSdkVersion
   defaultConfig {
-    minSdkVersion 21
-    targetSdkVersion 35
+    minSdkVersion rootProject.ext.minSdkVersion
+    targetSdkVersion rootProject.ext.targetSdkVersion
   }
 }
